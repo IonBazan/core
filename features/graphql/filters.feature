@@ -24,6 +24,26 @@ Feature: Collections filtering
     And the JSON node "data.dummies.edges[0].node.dummyBoolean" should be false
 
   @createSchema
+  Scenario: Retrieve a collection filtered using the exists filter
+    Given there are 3 dummy objects
+    And there are 2 dummy objects with dummyDate and relatedDummy
+    When I send the following GraphQL request:
+    """
+    {
+      dummies(description: {exists: true}) {
+        edges {
+          node {
+            id
+          }
+        }
+      }
+    }
+    """
+    Then the response status code should be 200
+    Then the JSON node "data.dummies.edges" should have 1 element
+    And the JSON node "data.dummies.edges[0].node.dummyBoolean" should be equal to true
+
+  @createSchema
   Scenario: Retrieve a collection filtered using the date filter
     Given there are 3 dummy objects with dummyDate
     When I send the following GraphQL request:
